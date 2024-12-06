@@ -1,0 +1,3 @@
+float32 forward_input
+float32 turn_input
+float32 light

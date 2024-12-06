@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="jaguar4x4">
+
+  <link name="body">
+    <visual>
+      <geometry>
+        <box size="0.5 0.5 0.25"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.085"/>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.085"/>
+      <geometry>
+        <box size="0.5 0.5 0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="front_lwheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="base_to_front_lwheel" type="fixed">
+    <parent link="body"/>
+    <child link="front_lwheel"/>
+    <origin xyz="-0.2 0.255 0.046" rpy="1.5708 0 0"/>
+  </joint>
+  
+  <link name="front_rwheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="base_to_front_rwheel" type="fixed">
+    <parent link="body"/>
+    <child link="front_rwheel"/>
+    <origin xyz="-0.2 -0.255 0.046" rpy="-1.5708 0 0"/>
+  </joint>
+  
+  
+  <link name="back_lwheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="base_to_back_lwheel" type="revolute">
+    <parent link="body"/>
+    <child link="back_lwheel"/>
+    <origin xyz="0.2 0.255 0.046" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10.0" lower="0" upper="0" velocity="0"/>
+  </joint>
+  
+  <link name="back_rwheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.058" radius="0.206"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="base_to_back_rwheel" type="fixed">
+    <parent link="body"/>
+    <child link="back_rwheel"/>
+    <origin xyz="0.2 -0.255 0.046" rpy="1.5708 0 0"/>
+  </joint>
+  
+</robot>
