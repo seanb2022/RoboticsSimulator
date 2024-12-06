@@ -74,6 +74,19 @@ public class PlantZone : MonoBehaviour
         	}
 			//else {
 			if(actionType == 1) {
+				
+				for(int _x = (int)-max_x; _x < max_x; _x += 1) {
+					RaycastHit hit;
+					Vector3 startPos = new Vector3(_x/xDensity, y/2,(_y/yDensity));
+					
+					//Place Plant
+					if (Physics.Raycast(startPos+transform.position, transform.TransformDirection(-Vector3.up), out hit, Mathf.Infinity))
+					{
+						GameObject newPlant = Instantiate(plant);
+						newPlant.transform.parent = prefabOutput;
+						newPlant.transform.position = hit.point;
+					}
+				}
 			
 				Vector2 wayPointPos;
 				Vector2 wayPointPos2;
