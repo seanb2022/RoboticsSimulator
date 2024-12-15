@@ -217,7 +217,7 @@ public class PlantZone : MonoBehaviour
 					Vector3 startPos = new Vector3(_inc*_x/xDensity, y/2,(_y/yDensity));
 					
 					//MoveWaypoint
-					if (Physics.Raycast(startPos+transform.position + new Vector3(0,0,1), transform.TransformDirection(-Vector3.up), out hit, Mathf.Infinity))
+					if (Physics.Raycast(startPos+transform.position + new Vector3(0,0,0.5f), transform.TransformDirection(-Vector3.up), out hit, Mathf.Infinity))
 					{
 						Vector2 plantPoint = new Vector2(hit.point.x, hit.point.z);
 						wp = new PathMaker.Waypoint();

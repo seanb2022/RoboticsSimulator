@@ -30,9 +30,9 @@ public class FruitBody : MonoBehaviour
 	
 	void OnTriggerEnter(Collider collider)
     {
-		if(collider.gameObject.tag == "basketZone") {
+		if(collider.gameObject.tag == "basketZone" && !rb.isKinematic) {
 			collider.gameObject.transform.parent.gameObject.GetComponent<Basket>().AddFruit(this);
-			Destroy(this);
+			Destroy(gameObject);
 		}
     }
 }

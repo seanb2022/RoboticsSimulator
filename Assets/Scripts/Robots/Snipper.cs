@@ -13,11 +13,13 @@ public class Snipper : MonoBehaviour
 	public void Snip() {
 		snipped = true;
 		foreach(GameObject g in affectedObjects) {
-			if(g.layer == 9) {
-				FruitBody f = g.transform.parent.GetComponent<FruitBody>();
-				if(f != null) {
-					f.Detach();
-					Destroy(g);
+			if(g != null) {
+				if(g.layer == 9) {
+					FruitBody f = g.transform.parent.GetComponent<FruitBody>();
+					if(f != null) {
+						f.Detach();
+						Destroy(g);
+					}
 				}
 			}
 		}

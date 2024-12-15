@@ -5,6 +5,7 @@ using UnityEngine;
 public class Basket : MonoBehaviour
 {
 	
+	public bool hanging;
 	public float weight = 0f;
 	
 	public void AddFruit(FruitBody f) {
@@ -22,6 +23,8 @@ public class Basket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(hanging) {
+			transform.rotation = Quaternion.Euler(0f,0f,0f);
+		}
     }
 }

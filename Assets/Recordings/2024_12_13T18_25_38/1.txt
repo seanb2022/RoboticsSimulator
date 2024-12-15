@@ -1,0 +1,5 @@
+Data:
+Context: The current latitude is 35.8876500000000 degrees, and the longitude is -86.2704800000000 degrees. The current heading is -0.0028846430000 degrees, with a velocity of 0.001997613 meters per second. The waypoints latitude is Infinity degrees, and the longitude of the waypoint is Infinity degrees.
+Question: What actions should the rover perform given the current image and situation?
+Answer: Turn light off.
+Explanation: The rover is going faster than the desired speed, thus it does not accelerate. The rover is not turning, because it is currently facing the waypoint. The rover turns its light off, because it is not driving in between the rows of soybean, or other crop.

@@ -21,6 +21,8 @@ public class Plant : MonoBehaviour
 	public DebugRover rover;
 	
 	public GameObject[] growthStages;
+	public GameObject fruitParent;
+	public List<GameObject> fruits;
 	public int growthStage;
 	
 	public bool desired;
@@ -28,6 +30,12 @@ public class Plant : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		fruits = new List<GameObject>();
+		if(fruitParent != null) {
+			foreach(Transform f in fruitParent.transform) {
+				fruits.Add(f.gameObject);
+			}
+		}
 		if(growthStages.Length > 0) {
 			growthStage = Random.Range(0,4);
 			growthStages[growthStage].SetActive(true);

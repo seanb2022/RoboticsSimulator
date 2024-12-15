@@ -353,98 +353,116 @@ public class DebugRover : MonoBehaviour
 			turnInput = 0;
 			lightOn = false;
 			
+			bool _stop = false;
+			if(robotArm != null) {
+				if(robotArm.harvesting) {
+					_stop = true;
+				}
+			}
 			
-			
-			if(currentWaypoint != null) {
+			if(!_stop) {
 				
-				Vector2 rPos = new Vector2(transform.position.x, transform.position.z);
-				
-				float targetHeading = Mathf.Atan2(currentWaypoint.pos.x - rPos.x,
-				currentWaypoint.pos.y - rPos.y
-				) * Mathf.Rad2Deg;
-				
-				if(targetHeading < 0) {
-					targetHeading += 360;
-				}
-				
-				//Debug.Log(targetHeading);
-				
-				float deltaHeading = heading - targetHeading;
-				if(deltaHeading > 180) {
-					targetHeading += 360;
-				}
-				if(deltaHeading < -180) {
-					heading += 360;
-				}
-				
-				deltaHeading = heading - targetHeading;
-				
-				
-				if(currentWaypoint.light) {
-					lightOn = true;
-				}
-				
-				var localVelocity = transform.InverseTransformDirection(rb.velocity);
+				if(currentWaypoint != null) {
 					
-				float forwardSpeed = localVelocity.z;
-				
-				
-				
-				bool reached = false;
-				if(currentWaypoint.checkWater) {
-					if(currentWaypoint.aimOnly) {
-						if(Mathf.Abs(deltaHeading) <= 1.2f) {
-							reached = true;
-						}
+					Vector2 rPos = new Vector2(transform.position.x, transform.position.z);
+					
+					float targetHeading = Mathf.Atan2(currentWaypoint.pos.x - rPos.x,
+					currentWaypoint.pos.y - rPos.y
+					) * Mathf.Rad2Deg;
+					
+					if(targetHeading < 0) {
+						targetHeading += 360;
 					}
-					else {
-						if(Vector3.Distance(rPos, currentWaypoint.pos) < checkDistance) {
+					
+					//Debug.Log(targetHeading);
+					
+					float deltaHeading = heading - targetHeading;
+					if(deltaHeading > 180) {
+						targetHeading += 360;
+					}
+					if(deltaHeading < -180) {
+						heading += 360;
+					}
+					
+					deltaHeading = heading - targetHeading;
+					
+					
+					if(currentWaypoint.light) {
+						lightOn = true;
+					}
+					
+					var localVelocity = transform.InverseTransformDirection(rb.velocity);
+						
+					float forwardSpeed = localVelocity.z;
+					
+					
+					
+					bool reached = false;
+					if(currentWaypoint.checkWater) {
+						if(currentWaypoint.aimOnly) {
 							if(Mathf.Abs(deltaHeading) <= 1.2f) {
 								reached = true;
 							}
 						}
+						else {
+							if(Vector3.Distance(rPos, currentWaypoint.pos) < checkDistance) {
+								if(Mathf.Abs(deltaHeading) <= 1.2f) {
+									reached = true;
+								}
+							}
+						}
 					}
-				}
-				else {
-					if(Vector3.Distance(rPos, currentWaypoint.pos) < minDistance) {
-						reached = true;
+					else if(currentWaypoint.pickFruit) {
+						if(Vector3.Distance(rPos, currentWaypoint.pos) < 2.5f) {
+							//if(Mathf.Abs(deltaHeading) <= 1.2f) {
+								reached = true;
+							//}
+						}
 					}
-				}
-				
-				
-				//Reached Waypoint
-				if(reached) {
-					if(currentWaypoint.checkWater) {
-						TestPlant();
-					}
-					currentWaypoint = PathMaker.Instance.GetNextWaypoint(transform.position);
-				}
-				
-				
-				
-				
-				if(Mathf.Abs(deltaHeading) > 1.2f) {
-					
-					if(heading < targetHeading) {
-						turnInput = 1;
-					}
-					if(heading > targetHeading) {
-						turnInput = -1;
+					else {
+						if(Vector3.Distance(rPos, currentWaypoint.pos) < minDistance) {
+							reached = true;
+						}
 					}
 					
-					if(forwardSpeed > 0) {
-						forwardInput = -1;
+					
+					//Reached Waypoint
+					if(reached) {
+						if(currentWaypoint.checkWater) {
+							TestPlant();
+						}
+						if(currentWaypoint.pickFruit) {
+							robotArm.HarvestCrop(currentWaypoint.plant.GetComponent<Plant>());
+						}
+						currentWaypoint = PathMaker.Instance.GetNextWaypoint(transform.position);
 					}
-					if(forwardSpeed < 0) {
-						forwardInput = 1;
+					
+					
+					
+					
+					if(Mathf.Abs(deltaHeading) > 1.2f) {
+						
+						if(heading < targetHeading) {
+							turnInput = 1;
+						}
+						if(heading > targetHeading) {
+							turnInput = -1;
+						}
+						
+						if(forwardSpeed > 0) {
+							forwardInput = -1;
+						}
+						if(forwardSpeed < 0) {
+							forwardInput = 1;
+						}
+						
 					}
-					
-				}
-				else {
-					
-					
-					if(forwardSpeed < closeSpeed) {
-						forwardInput = 1;
+					else {
+						
+						
+						if(forwardSpeed < closeSpeed) {
+							forwardInput = 1;
+						}
 					}
 				}
 			}
@@ -478,7 +496,8 @@ public class DebugRover : MonoBehaviour
 			if (Physics.Raycast(rayPos, Vector3.down*stepHeight, out hit))
 			{
 				// Place the rover slightly above the hit point
-				transform.position = new Vector3(rayPos.x, hit.point.y + 1.4f, rayPos.z);
+				//transform.position = new Vector3(rayPos.x, hit.point.y + 1.4f, rayPos.z);
+				rb.MovePosition(new Vector3(rayPos.x, hit.point.y + 1.4f, rayPos.z));
 				// Ensure the Rigidbody is properly settled
 				rb.velocity = Vector3.zero;
 				rb.angularVelocity = Vector3.zero;
@@ -521,9 +540,9 @@ public class DebugRover : MonoBehaviour
 				
 				rb.isKinematic = true;
 				Vector2 tPos = PathMaker.Instance.waypoints[0].pos;
-				transform.position = new Vector3(tPos.x, transform.position.y + 10.0f, tPos.y + 5.0f);
+				transform.position = new Vector3(tPos.x + 5.0f, transform.position.y + 10.0f, tPos.y);
 				rb.isKinematic = false;
-				rb.MovePosition(new Vector3(tPos.x, transform.position.y + 10.0f, tPos.y + 5.0f));
+				rb.MovePosition(new Vector3(tPos.x + 5.0f, transform.position.y + 10.0f, tPos.y));
 			}
 		}
 		
@@ -546,7 +565,7 @@ public class DebugRover : MonoBehaviour
 		}
 		else {
 			timeSpawned += Time.deltaTime;
-			Debug.Log("TS: " + timeSpawned);
+			//Debug.Log("TS: " + timeSpawned);
 		}
 		
 		if(!gotWaypoint) {
