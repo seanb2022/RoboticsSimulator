@@ -33,6 +33,11 @@ public class DebugRover : MonoBehaviour
 	public bool wantsToTeleport;
 	public RobotArm robotArm;
 	public int selectedJoint = -1;
+	public Vector2 rStick;
+	public float lTrigger;
+	public float rTrigger;
+	public PlayerControls controls;
+	public bool armMode;
 	
 	public bool selfDriving;
 	private float turnInput;
@@ -516,6 +521,9 @@ public class DebugRover : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		controls = new PlayerControls();
+		controls.Gameplay.Enable();
+		
 		PathMaker.Instance.rover = this;
 		
 		if(mqNode != null) {
@@ -529,7 +537,16 @@ public class DebugRover : MonoBehaviour
     void Update()
     {
 		
+		controls.Gameplay.toggleArm.performed += ctx => armMode = !armMode;
 		
+		controls.Gameplay.rightStick.performed += ctx => rStick = ctx.ReadValue<Vector2>();
+		controls.Gameplay.rightStick.canceled += ctx => rStick = Vector2.zero;
+		
+		controls.Gameplay.rightTrigger.performed += ctx => rTrigger = ctx.ReadValue<float>();
+		controls.Gameplay.rightTrigger.canceled += ctx => rTrigger = 0f;
+		
+		controls.Gameplay.leftTrigger.performed += ctx => lTrigger = ctx.ReadValue<float>();
+		controls.Gameplay.leftTrigger.canceled += ctx => lTrigger = 0f;
 		
 		if(wantsToTeleport) {
 			
@@ -579,13 +596,13 @@ public class DebugRover : MonoBehaviour
 		
 		charge -= (Time.deltaTime*powerUsage);
 		
-	vel = rb.velocity.magnitude;
+		vel = rb.velocity.magnitude;
         //float forwardF = Time.deltaTime * moveSpeed * Input.GetAxis("Vertical");
         //float sideF = Time.deltaTime * turnSpeed * Input.GetAxis("Horizontal");
 		
 		
 
-	heading = transform.eulerAngles.y;
+		heading = transform.eulerAngles.y;
 	
 		powerUsage = 0;
 		powerUsage += (Mathf.Abs(forwardInput) * Time.deltaTime * 0.5f);
@@ -593,7 +610,7 @@ public class DebugRover : MonoBehaviour
 			powerUsage += Time.deltaTime * 2.7f;
 		}
         
-	/*
+		/*
         rb.AddForce(transform.forward * forwardF);
         //rb.AddForce(transform.right * sideF);
         rb.AddTorque(transform.up * sideF);
@@ -720,13 +737,32 @@ public class DebugRover : MonoBehaviour
 			turnInput = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).x;
 		}
 		else {
-			if(selectedJoint == -1) {
-				forwardInput = Input.GetAxis("Vertical");
-				turnInput = Input.GetAxis("Horizontal");
+			
+			if(armMode) {
+				
+				robotArm.joints[6].input = -lTrigger + rTrigger;
+				
+				robotArm.joints[1].input = -rStick.x;
+				
+				robotArm.joints[0].input = Input.GetAxis("Horizontal");
+				robotArm.joints[2].input = Input.GetAxis("Vertical");
+				
+				robotArm.joints[3].input = rStick.y;
+				//robotArm.joints[1].input = rStick.x;
+				
+				forwardInput = turnInput = 0f;
+				
 			}
 			else {
-				robotArm.joints[selectedJoint].input = Input.GetAxis("Vertical");
-				forwardInput = turnInput = 0f;
+			
+				if(selectedJoint == -1) {
+					forwardInput = Input.GetAxis("Vertical");
+					turnInput = Input.GetAxis("Horizontal");
+				}
+				else {
+					robotArm.joints[selectedJoint].input = Input.GetAxis("Vertical");
+					forwardInput = turnInput = 0f;
+				}
 			}
 		}
 		

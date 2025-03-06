@@ -1,0 +1,2 @@
+Forward, Turn, Light, Latitude, Longitude, Heading, Velocity, WaypointLatitude, WaypointLongitude
+0, 0, 1, 35.8833200000000, -86.2758200000000, 12.7371400000000, 0.0003337041, Infinity, Infinity

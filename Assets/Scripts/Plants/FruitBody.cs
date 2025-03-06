@@ -25,7 +25,7 @@ public class FruitBody : MonoBehaviour
 	
 	void OnCollisionEnter(Collision collision)
     {
-        Detach();
+        //Detach();
     }
 	
 	void OnTriggerEnter(Collider collider)

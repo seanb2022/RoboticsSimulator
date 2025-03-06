@@ -217,7 +217,7 @@ public class PlantZone : MonoBehaviour
 					Vector3 startPos = new Vector3(_inc*_x/xDensity, y/2,(_y/yDensity));
 					
 					//MoveWaypoint
-					if (Physics.Raycast(startPos+transform.position + new Vector3(0,0,0.5f), transform.TransformDirection(-Vector3.up), out hit, Mathf.Infinity))
+					if (Physics.Raycast(startPos+transform.position + new Vector3(0,0,0.8f), transform.TransformDirection(-Vector3.up), out hit, Mathf.Infinity))
 					{
 						Vector2 plantPoint = new Vector2(hit.point.x, hit.point.z);
 						wp = new PathMaker.Waypoint();
@@ -242,6 +242,18 @@ public class PlantZone : MonoBehaviour
 						wp.plant = newPlant;
 						PathMaker.Instance.waypoints.Add(wp);
 					}
+				}
+				
+				RaycastHit _hit;
+				Vector3 tPos = new Vector3((_inc*endX/xDensity) + _inc*3f, y/2,((_y+0.5f)/yDensity));
+				if (Physics.Raycast(tPos+transform.position + new Vector3(0,0,0.8f), transform.TransformDirection(-Vector3.up), out _hit, Mathf.Infinity))
+				{
+					Vector2 plantPoint = new Vector2(_hit.point.x, _hit.point.z);
+					wp = new PathMaker.Waypoint();
+					wp.pos = plantPoint;
+					wp.light = false;
+					wp.checkWater = false;
+					PathMaker.Instance.waypoints.Add(wp);
 				}
 				
 			}

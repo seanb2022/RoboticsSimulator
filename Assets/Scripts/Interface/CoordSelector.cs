@@ -30,6 +30,7 @@ public class CoordSelector : MonoBehaviour
 	public List<CoordinateEntry> locations;
 	public GameObject ContextMenu;
 	public TMP_Text curRobotDisplay;
+	public string currentLocation;
 	
 	
     // Start is called before the first frame update
@@ -99,6 +100,7 @@ public class CoordSelector : MonoBehaviour
 		
 		//PathMaker.Instance.map.SetPosition(_lng, _lat);
 		PathMaker.Instance.mapCoords = new Vector2(_lng,_lat);
+		PathMaker.Instance.LoadSubscene(currentLocation);
 		PathMaker.Instance.mapReady = true;
 		
 		gameObject.SetActive(false);
@@ -110,5 +112,6 @@ public class CoordSelector : MonoBehaviour
         //Debug.Log(locations[d.value].name);
 		lat.text = locations[d.value].coords.x.ToString();
 		lng.text = locations[d.value].coords.y.ToString();
+		currentLocation = locations[d.value].name;
     }
 }

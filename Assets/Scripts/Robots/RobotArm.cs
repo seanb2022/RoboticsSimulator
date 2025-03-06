@@ -17,6 +17,7 @@ public class RobotArm : MonoBehaviour
 	public float lr = 7f;
 	public float minDist = 0.03f;
 	public float minSpeed = 0.25f;
+	public float maxSpeed = 1.0f;
 	
 	public bool harvesting;
 	
@@ -32,6 +33,7 @@ public class RobotArm : MonoBehaviour
 		public float max;
 		public float curVal = 0f;
 		public GameObject obj;
+		public Vector3 basePos;
 		
 	}
 	
@@ -54,6 +56,7 @@ public class RobotArm : MonoBehaviour
         gradients = new List<float>();
 		for(int i = 0; i < joints.Count; i++) {
 			gradients.Add(0);
+			joints[i].basePos = joints[i].obj.transform.localPosition;
 			if(joints[i].type == 3) {
 				cutter = true;
 			}
@@ -72,10 +75,22 @@ public class RobotArm : MonoBehaviour
 				targetPos += new Vector3(0f,0.03f,0f);
 			}
 			
-			float f_x = Vector3.Distance(desiredSpot.position, targetPos);
-			joints[i].obj.transform.Rotate(joints[i].axis * samplingDistance, Space.Self);
-			float f_x_d = Vector3.Distance(desiredSpot.position, targetPos);
-			joints[i].obj.transform.Rotate(joints[i].axis * -samplingDistance, Space.Self);
+			float f_x = 0;
+			float f_x_d = 0;
+			
+			if(joints[i].type == 0) {
+			
+				f_x = Vector3.Distance(desiredSpot.position, targetPos);
+				joints[i].obj.transform.Rotate(joints[i].axis * samplingDistance, Space.Self);
+				f_x_d = Vector3.Distance(desiredSpot.position, targetPos);
+				joints[i].obj.transform.Rotate(joints[i].axis * -samplingDistance, Space.Self);
+			}
+			if(joints[i].type == 1) {
+				f_x = Vector3.Distance(desiredSpot.position, targetPos);
+				joints[i].obj.transform.localPosition += (joints[i].axis * samplingDistance);
+				f_x_d = Vector3.Distance(desiredSpot.position, targetPos);
+				joints[i].obj.transform.localPosition -= (joints[i].axis * samplingDistance);
+			}
 			output = (f_x - f_x_d) / samplingDistance;
 		}
 		
@@ -102,13 +117,19 @@ public class RobotArm : MonoBehaviour
 					gradients[i] = GetGradient(i);
 					float moveAmount = gradients[i] * lr;
 					if(moveAmount < 0) {
-						if(-moveAmount < minSpeed) {
+						if(-moveAmount > -minSpeed) {
 							moveAmount = -minSpeed;
+						}
+						if(-moveAmount < -maxSpeed) {
+							moveAmount = -maxSpeed;
 						}
 					}
 					if(moveAmount > 0) {
 						if(moveAmount < minSpeed) {
 							moveAmount = minSpeed;
+						}
+						if(moveAmount > maxSpeed) {
+							moveAmount = maxSpeed;
 						}
 					}
 					joints[i].input = moveAmount;
@@ -154,9 +175,21 @@ public class RobotArm : MonoBehaviour
         for(int i = 0; i < joints.Count; i++) {
 			if(joints[i].input != 0) {
 				
-				if(joints[i].type == 0 || joints[i].type == 1) {
+				if(joints[i].type == 0) {
 				
 					joints[i].obj.transform.Rotate(joints[i].axis * joints[i].input * joints[i].maxDelta * Time.deltaTime, Space.Self);
+					
+				}
+				
+				if(joints[i].type == 1) {
+					
+					joints[i].obj.transform.localPosition += (joints[i].axis * joints[i].input * joints[i].maxDelta * Time.deltaTime);
+					if(joints[i].obj.transform.localPosition.x > (joints[i].max)) {
+						joints[i].obj.transform.localPosition = new Vector3(joints[i].max,joints[i].obj.transform.localPosition.y,joints[i].obj.transform.localPosition.z);
+					}
+					if(joints[i].obj.transform.localPosition.x < (joints[i].min)) {
+						joints[i].obj.transform.localPosition = new Vector3(joints[i].min,joints[i].obj.transform.localPosition.y,joints[i].obj.transform.localPosition.z);
+					}
 					
 				}
 				

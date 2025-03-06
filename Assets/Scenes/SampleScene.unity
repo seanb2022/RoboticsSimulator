@@ -6534,6 +6534,7 @@ MonoBehaviour:
   - {fileID: 7719495695346513854, guid: 1b5b65a623158714eba43642d2bb2001, type: 3}
   - {fileID: 7719495695346513854, guid: 685325b35bdcdee4fb2c54799ed82c59, type: 3}
   - {fileID: 7719495695346513854, guid: 35708fa528cebb747ae47fc8fac5a3bb, type: 3}
+  - {fileID: 7719495695346513854, guid: f254844588e4d8b4094bb03e82626f1b, type: 3}
   robots: []
   radius: 2
 --- !u!4 &1417518402
@@ -6565,6 +6566,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rover: {fileID: 0}
   roverControls: {fileID: 1650184227}
+  currentLocationName: 
+  subscenes:
+  - name: Farm in the City
+    prefab: {fileID: 2334573158658295277, guid: c141e59979d2d8c4cb765618f94815e8, type: 3}
   loaded: 0
   waypointPrefab: {fileID: 5432547211601663003, guid: b9ce1e0cea98c474ebf334982193f939, type: 3}
   currentWayPointObj: {fileID: 0}
@@ -8122,6 +8127,7 @@ MonoBehaviour:
   dropdown: {fileID: 1521970301}
   ContextMenu: {fileID: 1650184223}
   curRobotDisplay: {fileID: 2140040124}
+  currentLocation: 
 --- !u!1 &1785781704
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PathMaker : MonoBehaviour
 {
@@ -17,6 +18,16 @@ public class PathMaker : MonoBehaviour
 	public static PathMaker Instance;
 	public DebugRover rover;
 	public RoverControls roverControls;
+	
+	public string currentLocationName;
+	
+	[System.Serializable]
+	public class Subscene {
+		public string name;
+		public GameObject prefab;
+	};
+	
+	public List<Subscene> subscenes;
 	
 	public List<Waypoint> waypoints;
 	//public List<bool> lightPoints;
@@ -48,6 +59,7 @@ public class PathMaker : MonoBehaviour
 	
 	public bool VR;
 	
+	
 	public float weedDensity;
 	public float xDensity;
 	public float yDensity;
@@ -55,6 +67,7 @@ public class PathMaker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		
 		Instance = this;
         waypoints = new List<Waypoint>();
 		Instance.selectedRobot = GetComponent<SelectMenu>().robotPrefabs[0].GetComponent<RobotInfo>();
@@ -84,9 +97,25 @@ public class PathMaker : MonoBehaviour
 		return le;
 	}
 	
+	public void LoadSubscene(string n) {
+		currentLocationName = n;
+		foreach(Subscene s in subscenes) {
+			if(s.name == n) {
+				GameObject newSubscene = Instantiate(s.prefab);
+				newSubscene.transform.position = Vector3.zero;
+			}
+		}
+	}
+	
     // Update is called once per frame
     void Update()
     {
+		
+		
+		
+		//Debug.Log(rStick);
+		
+		//Debug.Log(controls.Gameplay.rightStick.ReadValue<Vector2>());
 		
 		/*
 		if(Input.GetKeyDown("c")) {
